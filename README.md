@@ -1,5 +1,6 @@
-#Trabalho Prático 1 – programação concorrente em Java
-**I – Observações:
+# Trabalho Prático 1 – programação concorrente em Java
+<br>
+**I – Observações:**
 1. O trabalho poderá ser feito em grupos de dois ou três integrantes.
 *É permitido discutir os problemas e estratégias de solução com outros grupos, mas quando se tratar de implementar
 computacionalmente as soluções, isto deve ser feito separadamente.*
