@@ -6,7 +6,7 @@ package sockets;
  */
 import java.io.InputStream;
 import java.util.Scanner;
-import main.ProgramaCliente;
+import main.ReservarPassagem;
 
 /*
  * Demonstrando a troca de mensagens entre processos através de sockets 
@@ -41,7 +41,7 @@ public class TrataCliente extends Thread{
             /*
                 aceita cliente e vai para o menu de reserva de passagens
             */
-            ProgramaCliente pc = new ProgramaCliente();
-            pc.menu();
+            ReservarPassagem rp = new ReservarPassagem();
+            rp.menu();
 	}
 }

@@ -9,7 +9,7 @@ import java.util.Scanner;
  *
  * @author luis
  */
-public class ProgramaCliente {
+public class ReservarPassagem {
 
 	public static void menu() {
             Scanner leitor = new Scanner(System.in);

@@ -17,7 +17,7 @@ import java.util.Scanner;
  *
  * @author luis
  */
-public class ProgramaServer {
+public class Aeroporto {
 
     public static void main(String[] args) {
         Aviao aviao;

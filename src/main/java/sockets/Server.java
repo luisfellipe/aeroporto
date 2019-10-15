@@ -48,14 +48,7 @@ public class Server {
 			System.out.println("Nova conexão com o cliente " +
 				cliente.getInetAddress().getHostAddress());
 			
-			//adicionando saida do cliente a lista de clientes do servidor
-			PrintStream ps = new PrintStream(
-					cliente.getOutputStream());
-			this.clientes.add(ps);
 			
-			/* Criando um objeto (que trata-se de uma thread) para o 
-			 * tratamento do Cliente
-			 */
 			TrataCliente tc = new TrataCliente(
 					cliente.getInputStream(), this);
 			//iniciando a thread
