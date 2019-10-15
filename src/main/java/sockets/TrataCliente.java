@@ -42,6 +42,6 @@ public class TrataCliente extends Thread{
                 aceita cliente e vai para o menu de reserva de passagens
             */
             ReservarPassagem rp = new ReservarPassagem();
-            rp.menu();
+            rp.menu(cliente);
 	}
 }

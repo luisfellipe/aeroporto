@@ -8,8 +8,10 @@ package main;
 import aero.Aviao;
 import aero.Reserva;
 import aero.Voo;
+import dao.AviaoDAO;
 import exception.NotPossibleReserveException;
 import java.io.NotActiveException;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -52,7 +54,11 @@ public class Aeroporto {
     }
 
     private void listarAvioes(){
-        
+        AviaoDAO aviaoDAO = new AviaoDAO();
+        List<Aviao> lista =  aviaoDAO.findAll();
+        for(Aviao av : lista){
+            av.toString();
+        }
     }
     
     private void listarVoos(){

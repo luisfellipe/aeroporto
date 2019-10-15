@@ -1,5 +1,11 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package dao;
 
+import aero.Assento;
 import aero.Reserva;
 import connect.DataBase;
 import java.sql.PreparedStatement;
@@ -14,7 +20,7 @@ import java.util.logging.Logger;
  *
  * @author luis
  */
-public class ReservaDAO {
+public class AssentoDAO {
 
     public void insert(Reserva reserva) {
         try {
@@ -61,12 +67,13 @@ public class ReservaDAO {
         return null;
     }
 
-    public List<Reserva> findAll() {
+    public List<Assento> findAll(int codVoo) {
 
-        String sql = "SELECT * FROM reserva ";
+        String sql = "SELECT * FROM assento WHERE cod_voo=?";
         PreparedStatement stmt = null;
         try {
             stmt = DataBase.getConnection().prepareStatement(sql);
+            stmt.setInt(1, codVoo);
         } catch (SQLException ex) {
             Logger.getLogger(ReservaDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -77,21 +84,22 @@ public class ReservaDAO {
         } catch (SQLException ex) {
             Logger.getLogger(ReservaDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
-        ArrayList<Reserva> reservas = new ArrayList<>(10);
+        ArrayList<Assento> assentos = new ArrayList<>(10);
         try {
             while (rs.next()) {
-                Reserva reserva = null;
+                Assento ass = null;
                 try {
-                    reserva = new Reserva(rs.getInt(1), rs.getInt(2), rs.getString(3));
+                    ass = new Assento(rs.getInt("cod_assento"), rs.getInt("cod_aviao"), rs.getBoolean("reservado"));
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                 }
-                reservas.add(reserva);
+                assentos.add(ass);
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
 
-        return reservas;
+        return assentos;
     }
 }
+

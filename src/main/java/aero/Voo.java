@@ -1,42 +1,38 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package aero;
 
 /**
  *
  * @author luis
  */
-import java.util.ArrayList;
+import dao.AviaoDAO;
+import dao.ReservaDAO;
+import java.util.List;
 
 public class Voo {
 
-    private int codigo;
-    private String origem, destino, data, saida, chegada;
-    private Aviao aviao;
-    private ArrayList<Reserva> reservas;
+    private int codigo, codAviao;
+    private String origem, destino, dataSaida, dataChegada;
+    private List<Reserva> reservas;
 
-    public Voo(int codigo, String origem, String destino, String data, String saida, String chegada) {
+    public Voo(int codigo, int codaviao, String origem, String destino, String dataSaida, String dataChegada) {
         this.codigo = codigo;
         this.origem = origem;
-        this.data = data;
-        this.saida = saida;
-        this.chegada = chegada;
+        this.dataSaida = dataSaida;
+        this.dataChegada = dataChegada;
         this.destino = destino;
-    }
-
-    public void setAviao(Aviao aviao) {
-        this.aviao = aviao;
+        ReservaDAO rdao = new ReservaDAO();
+        reservas = rdao.findAll();
     }
 
     public Aviao getAviao() {
+        AviaoDAO avdao = new AviaoDAO();
+        Aviao aviao;
+        aviao = avdao.findById(codAviao);
         return aviao;
     }
 
     public boolean setReserva(Reserva reserva) {
-
+        reservas.add(reserva);
         return true;
     }
 
@@ -55,31 +51,35 @@ public class Voo {
     }
 
     /**
-     * @return the data
+     * @return a data de chegada ao destino
      */
-    public String getData() {
-        return data;
+    public String getDataChegada() {
+        return dataChegada;
     }
 
     /**
-     * @return the saida
+     * @return the saida do voo
      */
-    public String getSaida() {
-        return saida;
-    }
-
-    /**
-     * @return the chegada
-     */
-    public String getChegada() {
-        return chegada;
+    public String getDataSaida() {
+        return dataSaida;
     }
 
     /**
      * @return the reservas
      */
-    public ArrayList<Reserva> getReservas() {
+    public List<Reserva> getReservas() {
         return reservas;
+    }
+
+    /*
+     * quantidade de assentos livres
+     * retorna 0 ou menor que zero se não existem mais assentos disponiveis
+     */
+    public int qtdAssLivres() {
+        AviaoDAO avdao = new AviaoDAO();
+        Aviao aviao;
+        aviao = avdao.findById(codAviao);
+        return aviao.qtdAssentos() - reservas.size();
     }
 
     @Override
@@ -88,9 +88,8 @@ public class Voo {
         sb.append("Codigo: ").append(this.codigo)
                 .append("Origem: ").append(this.origem)
                 .append(" Destino: ").append(this.destino)
-                .append(" Data: ").append(this.data)
-                .append(" Saida: ").append(this.saida)
-                .append(" Chegada: ").append(this.chegada);
+                .append(" Saida: ").append(this.dataSaida)
+                .append(" Chegada: ").append(this.dataChegada);
         return sb.toString();
     }
 

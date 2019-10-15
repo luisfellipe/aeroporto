@@ -3,14 +3,15 @@ package aero;
 /**
  *
  * @author luis
- */
+ */ 
 public class Assento {
 	private int codAssento, codAviao;
         private boolean reservado = false;
 	
-	public Assento( int codAssento, int codAviao) {
+	public Assento( int codAssento, int codAviao, boolean reservado) {
 		this.codAssento = codAssento;
 		this.codAviao = codAviao;
+                this.reservado = reservado;
                 
 	}
 	
