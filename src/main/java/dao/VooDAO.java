@@ -18,7 +18,7 @@ import java.util.logging.Logger;
 public class VooDAO {
 
     public void insert(Voo voo){
-        String sql = "INSERT INTO voo VALUES(codvoo,codaviao, origem, destino, datasaida, datachegada)"
+        String sql = "INSERT INTO voo(codvoo,codaviao, origem, destino, datasaida, datachegada)"
                 + "VALUES(?,?,?,?,?,?)";
         PreparedStatement stmt = null;
         try {
@@ -105,7 +105,5 @@ public class VooDAO {
         } catch (SQLException ex) {
             Logger.getLogger(VooDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
-
     }
-
 }

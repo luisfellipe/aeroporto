@@ -71,14 +71,10 @@ public class TrataCliente extends Thread {
     }
 
     public static void menu(PrintStream saida, BufferedReader entrada) throws IOException {
-        StringBuffer sb;
 
         int escolha = 0;
         while (true) {
-            sb = new StringBuffer();
-            sb.append("Listar Voos < 0");
-            sb.append("\nreservar Voo >= 0");
-            saida.println(sb.toString());
+            saida.println("Listar Voos < 0\nreservar Voo >= 0");
             escolha = Integer.parseInt(entrada.readLine());
 
             if (escolha >= 0) {

@@ -22,13 +22,12 @@ import java.util.logging.Logger;
  */
 public class AssentoDAO {
 
-    public void insert(Reserva reserva) {
+    public void insert(Assento assento) {
         try {
-            String sql = "INSERT INTO reserva(cpf, cod_assento,cod_voo ) values (?, ?, ?)";
+            String sql = "INSERT INTO assento(codassento, codavia) values (?, ?, ?)";
             PreparedStatement stmt = DataBase.getConnection().prepareStatement(sql);
-            stmt.setString(1, reserva.getCpf());
-            stmt.setInt(2, reserva.getCodAssento());
-            stmt.setInt(3, reserva.getCodVoo());
+            stmt.setInt(1, assento.getcodAssento());
+            stmt.setInt(2, assento.getCodAviao());
             stmt.execute();
             stmt.close();
         } catch (SQLException ex) {
@@ -100,6 +99,19 @@ public class AssentoDAO {
         }
 
         return assentos;
+    }
+    
+    public void reservaAssento(boolean reservado){
+        
+         try {
+            String sql = "UPADATE assento set reservado=?";
+            PreparedStatement stmt = DataBase.getConnection().prepareStatement(sql);
+            stmt.setBoolean(1, reservado);
+            stmt.execute();
+            stmt.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(ReservaDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }
 

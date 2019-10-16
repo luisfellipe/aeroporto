@@ -11,6 +11,13 @@ package aero;
  */
 
 public class Reserva {
+
+    /**
+     * @return the codReserva
+     */
+    public int getCodReserva() {
+        return codReserva;
+    }
 	private String cpf;
 	private int codVoo, codAssento, codReserva;
 	
@@ -42,7 +49,7 @@ public class Reserva {
         sb.append("CPF: ").append(cpf)
         .append(" Voo: ").append(codVoo)
              .append(" Assento: ").append(codAssento)
-                .append(" Codigo: ").append(codReserva);
+                .append(" Codigo: ").append(getCodReserva());
         return super.toString(); //To change body of generated methods, choose Tools | Templates.
     }
        

@@ -1,5 +1,7 @@
 package aero;
 
+import dao.AssentoDAO;
+
 /**
  *
  * @author luis
@@ -12,6 +14,7 @@ public class Assento {
 		this.codAssento = codAssento;
 		this.codAviao = codAviao;
                 this.reservado = reservado;
+                new AssentoDAO().insert(this);
                 
 	}
 	
@@ -28,6 +31,7 @@ public class Assento {
         } 
         public void setReservado(boolean valor){
             reservado = valor;
+            new AssentoDAO().reservaAssento(reservado);
         }
         
         

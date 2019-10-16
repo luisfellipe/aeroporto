@@ -30,14 +30,17 @@ public class ReservaDAO {
         }
 
     }
+    public void update(Reserva reserva){
+        this.delete(reserva.getCodReserva());
+        this.insert(reserva);
+    }
 
-    public void delete(int codVoo, int codAssento) {
+    public void delete(int codReserva) {
 
         try {
-            String sql = "DELETE FROM reserva where codvoo=? and cod_assento=?";
+            String sql = "DELETE FROM reserva where codvreserva=?";
             PreparedStatement stmt = DataBase.getConnection().prepareStatement(sql);
-            stmt.setInt(1, codVoo);
-            stmt.setInt(2, codAssento);
+            stmt.setInt(1, codReserva);
             stmt.execute();
             stmt.close();
         } catch (SQLException ex) {
@@ -46,50 +49,38 @@ public class ReservaDAO {
     }
 
     public Reserva findById(int codReserva) {
+        Reserva reserva = null;
         try {
             String sql = "SELECT cod_voo, cod_assento, cpf FROM reserva WHERE cod_reserva=?";
             PreparedStatement stmt = DataBase.getConnection().prepareStatement(sql);
             stmt.setInt(1, codReserva);
             ResultSet rs = stmt.executeQuery();
-            Reserva reserva = new Reserva(
+           reserva = new Reserva(
                     rs.getInt(1), rs.getInt(2), rs.getString(3));
-
-            return reserva;
+           stmt.close();
         } catch (SQLException ex) {
             Logger.getLogger(ReservaDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return null;
+        return reserva;
     }
 
     public List<Reserva> findAll() {
-
+        ArrayList<Reserva> reservas = null;
         String sql = "SELECT * FROM reserva ";
         PreparedStatement stmt = null;
-        try {
-            stmt = DataBase.getConnection().prepareStatement(sql);
-        } catch (SQLException ex) {
-            Logger.getLogger(ReservaDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
         ResultSet rs = null;
         try {
+            stmt = DataBase.getConnection().prepareStatement(sql);
             rs = stmt.executeQuery();
-        } catch (SQLException ex) {
-            Logger.getLogger(ReservaDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        ArrayList<Reserva> reservas = new ArrayList<>(10);
-        try {
+            reservas = new ArrayList<>(10);
+
             while (rs.next()) {
                 Reserva reserva = null;
-                try {
-                    reserva = new Reserva(rs.getInt(1), rs.getInt(2), rs.getString(3));
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-                reservas.add(reserva);
+                reservas.add(new Reserva(rs.getInt(1), rs.getInt(2), rs.getString(3)));
             }
+            stmt.close();
         } catch (SQLException ex) {
-            ex.printStackTrace();
+            Logger.getLogger(ReservaDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         return reservas;

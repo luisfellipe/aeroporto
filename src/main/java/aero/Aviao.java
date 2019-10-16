@@ -18,11 +18,12 @@ public class Aviao {
 	private ArrayList<Assento> assentos;
 	
 	
-	public Aviao(int codigo, String marca, String modelo) {
+	public Aviao(int codigo, String marca, String modelo, int qtdAssentos) {
 		this.codigo = codigo;
                 this.marca = marca;
                 this.modelo = modelo;
-                AssentoDAO assdao = new AssentoDAO();
+                this.qtdAssentos = qtdAssentos;
+                
 	}
 	
 	public int getCod() {
@@ -44,7 +45,6 @@ public class Aviao {
             }
             return null;
         }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -54,6 +54,8 @@ public class Aviao {
                 .append("Assentos(qtd): ").append(qtdAssentos);
         return super.toString(); //To change body of generated methods, choose Tools | Templates.
     }
+
+  
         
         
 	
