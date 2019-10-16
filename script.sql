@@ -19,3 +19,21 @@ create table assentos(,
 	int codaviao,
 	bool reservado,
 );
+
+create table voo(
+	int codvoo,
+	int codaviao,
+	varchar origem,
+	varchar destino,
+	varchar datasaida,
+	varchar datachegada,
+);
+
+
+
+
+
+
+
+
+
