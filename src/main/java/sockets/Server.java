@@ -16,17 +16,17 @@ import java.util.ArrayList;
  * Classe Servidor, que aguarda conexão de clientes. Quando uma conexão é 
  * estabelecida, o cliente é encaminhado e tratado por uma thread (socket)
  */
-public class Server{
-
+public class Server {
+    
     private int porta;
     ServerSocket servidor;
     private ArrayList<PrintStream> clientes;
-
+    
     public Server(int porta) {
         this.porta = porta;
         this.clientes = new ArrayList<PrintStream>();
     }
-
+    
     public void executa() throws IOException {
         /*
 	 * Iniciando o servidor, na porta 8090
@@ -48,17 +48,19 @@ public class Server{
              */
             System.out.println("Nova conexão com o cliente "
                     + cliente.getInetAddress().getHostAddress());
-            
+            PrintStream saida = new PrintStream(cliente.getOutputStream());
+            saida.print("Nova conexão com o cliente " + cliente.getInetAddress().getHostAddress());
             TrataCliente tc = new TrataCliente(
                     cliente, servidor);
             //iniciando a thread
             tc.start();
         }
     }
-    public ServerSocket getServer(){
+
+    public ServerSocket getServer() {
         return servidor;
     }
-
+    
     public static void main(String[] args) {
         try {
             /*
