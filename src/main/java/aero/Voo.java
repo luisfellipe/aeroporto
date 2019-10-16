@@ -27,12 +27,14 @@ public class Voo {
     public Aviao getAviao() {
         AviaoDAO avdao = new AviaoDAO();
         Aviao aviao;
-        aviao = avdao.findById(codAviao);
+        aviao = avdao.findById(getCodAviao());
         return aviao;
     }
 
     public boolean setReserva(Reserva reserva) {
-        reservas.add(reserva);
+        getReservas().add(reserva);
+        ReservaDAO rdao = new ReservaDAO();
+        rdao.insert(reserva);
         return true;
     }
 
@@ -78,19 +80,82 @@ public class Voo {
     public int qtdAssLivres() {
         AviaoDAO avdao = new AviaoDAO();
         Aviao aviao;
-        aviao = avdao.findById(codAviao);
-        return aviao.qtdAssentos() - reservas.size();
+        aviao = avdao.findById(getCodAviao());
+        return aviao.qtdAssentos() - getReservas().size();
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Codigo: ").append(this.codigo)
-                .append("Origem: ").append(this.origem)
-                .append(" Destino: ").append(this.destino)
-                .append(" Saida: ").append(this.dataSaida)
-                .append(" Chegada: ").append(this.dataChegada);
+        sb.append("Codigo: ").append(this.getCodigo())
+                .append("Origem: ").append(this.getOrigem())
+                .append(" Destino: ").append(this.getDestino())
+                .append(" Saida: ").append(this.getDataSaida())
+                .append(" Chegada: ").append(this.getDataChegada());
         return sb.toString();
+    }
+
+    /**
+     * @param codigo the codigo to set
+     */
+    public void setCodigo(int codigo) {
+        this.codigo = codigo;
+    }
+
+    /**
+     * @return the codAviao
+     */
+    public int getCodAviao() {
+        return codAviao;
+    }
+
+    /**
+     * @param codAviao the codAviao to set
+     */
+    public void setCodAviao(int codAviao) {
+        this.codAviao = codAviao;
+    }
+
+    /**
+     * @param origem the origem to set
+     */
+    public void setOrigem(String origem) {
+        this.origem = origem;
+    }
+
+    /**
+     * @return the destino
+     */
+    public String getDestino() {
+        return destino;
+    }
+
+    /**
+     * @param destino the destino to set
+     */
+    public void setDestino(String destino) {
+        this.destino = destino;
+    }
+
+    /**
+     * @param dataSaida the dataSaida to set
+     */
+    public void setDataSaida(String dataSaida) {
+        this.dataSaida = dataSaida;
+    }
+
+    /**
+     * @param dataChegada the dataChegada to set
+     */
+    public void setDataChegada(String dataChegada) {
+        this.dataChegada = dataChegada;
+    }
+
+    /**
+     * @param reservas the reservas to set
+     */
+    public void setReservas(List<Reserva> reservas) {
+        this.reservas = reservas;
     }
 
 }
