@@ -6,58 +6,49 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Scanner;
 
+
 /*
- * Demonstrando a comunicação entre processos atraves de sockets 
- * multithreadings (servidor ira criar um thread para cada cliente,
- * de modo a tratar multiplos clientes
- * Classe Cliente, que se conecta a um Servidor e envia mensagens a ele
+ * Demonstrando a troca de mensagens entre processos
+ * Classe Cliente, que envia mensagens a um Servidor
+ * 
  */
-public class Cliente<Object> {
-
-    private String host;
-    private int porta;
-
-    public Cliente(String host, int porta) {
-        this.host = host;
-        this.porta = porta;
-    }
-
-    public void executa() throws UnknownHostException, IOException {
-        /*
-		 * Tentando se conectar ao servidor, que está rodando
-		 * no localhost, porta 8090
-         */
-        Socket cliente = new Socket(this.host, this.porta);
-        System.out.println("Cliente conectado!");
-
-        /*scanner para leitura da mensagem digitada
-			pelo usuario no console*/
-        Scanner teclado = new Scanner(System.in);
-
-        /* buffer de saida. Sera usado para enviar a mensagem
-		 * ao servidor */
-        PrintStream saida = new PrintStream(
-                cliente.getOutputStream());
-        
-
-        while (teclado.hasNextLine()) {
-            /*lendo a linha digitada no console e "jogando" no buffer
-				de saida*/
-            saida.println(teclado.nextLine());
-        }
-
-        //fechando as conexoes
-        saida.close();
-        teclado.close();
-        cliente.close();
-    }
+public class Cliente {
 
     public static void main(String[] args) {
+        /*
+	 * Tentando se conectar ao servidor, que está rodando
+	 * no localhost, porta 8090
+         */
         try {
-            /*
-             * Criando uma instancia de Cliente e tentando executa-lo
+            Socket cliente = new Socket("127.0.0.1", 8090);
+            System.out.println("Cliente conectado!");
+
+            /* scanner para leitura da mensagem digitada pelo usuario. 
+             * Usuario digita uma mensagem no console e essa mensagem é enviada ao servidor.
              */
-            new Cliente("127.0.0.1", 8090).executa();
+            Scanner teclado = new Scanner(System.in);
+            //buffer de saida
+            PrintStream saida = new PrintStream(
+                    cliente.getOutputStream());
+            
+            while(teclado.hasNextLine()){
+                //lendo as informacoes que o servidor enviar
+                Scanner s = new Scanner(cliente.getInputStream());
+                
+                //lendo a linha e "jogando" (ou escrevendo) no buffer de saida
+                saida.println(teclado.nextLine());
+
+              
+                //imprimindo mensagem enviada pelo cliente
+                if (s.hasNextLine()) {
+                    System.out.println("Servidor: " + s.nextLine());
+                }
+            }
+
+            //fechando as conexoes
+            saida.close();
+            teclado.close();
+            cliente.close();
         } catch (UnknownHostException e) {
             e.printStackTrace();
         } catch (IOException e) {

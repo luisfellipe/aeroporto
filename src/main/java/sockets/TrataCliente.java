@@ -50,37 +50,34 @@ public class TrataCliente extends Thread {
      */
     @Override
     public void run() {
-        BufferedReader entrada = null;
+        Scanner  entrada = null;
         PrintStream saida = null;
         try {
-            entrada = new BufferedReader(new InputStreamReader(cliente.getInputStream()));
-            saida = new PrintStream(cliente.getOutputStream());
+           //saida do cliente
+           saida = new PrintStream(cliente.getOutputStream());
+            //lendo as informacoes que o cliente enviar
+            entrada = new Scanner(cliente.getInputStream());
             //
             menu(saida, entrada);
             //
         } catch (IOException ex) {
             Logger.getLogger(TrataCliente.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
-            try {
-                entrada.close();
-            } catch (IOException ex) {
-                Logger.getLogger(TrataCliente.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            entrada.close();
         }
 
     }
 
-    public static void menu(PrintStream saida, BufferedReader entrada) throws IOException {
+    public static void menu(PrintStream saida, Scanner  entrada) throws IOException {
 
         int escolha = 0;
         while (true) {
             saida.println("Listar Voos < 0\nreservar Voo >= 0");
-            escolha = Integer.parseInt(entrada.readLine());
-
+            escolha = entrada.nextInt();
             if (escolha >= 0) {
                 int codVoo = 0;
                 saida.print("Voltar: 0\nCodigo do Voo: ");
-                codVoo = Integer.parseInt(entrada.readLine());
+                codVoo = entrada.nextInt();
                 if (codVoo == 0) {
                     continue;
                 }
@@ -90,17 +87,17 @@ public class TrataCliente extends Thread {
                 }
 
                 saida.println("Quantos assentos deseja reservar?");
-                escolha = Integer.parseInt(entrada.readLine());
+                escolha = entrada.nextInt();
                 if (codVoo == 0) {
                     continue;
                 }
-                escolha = Integer.parseInt(entrada.readLine());
+                escolha = entrada.nextInt();
                 if (voo.qtdAssLivres() < escolha) {
                     saida.print("Erro: Falta de assento, Existem " + voo.qtdAssLivres() + " Assentos Disponiveis");
                 }
                 String cpf = null;
                 saida.print("Digite seu CPF: ");
-                cpf = entrada.readLine();
+                cpf = entrada.nextLine();
                 Reserva r = new Reserva(codVoo, voo.getAviao().getAssentoLivre().getcodAssento(), cpf);
                 reservar(r, saida);
             } else if (escolha < 0) {

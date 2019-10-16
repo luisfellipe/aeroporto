@@ -14,9 +14,10 @@ create table aviao(
 	
 );
 
-create table assentos(,
+create table assento(,
 	int codassento,
 	int codaviao,
+	int cod_voo,
 	bool reservado,
 );
 
