@@ -1,4 +1,5 @@
-# Trabalho Prático 1 – programação concorrente em Java
+# Trabalho Prático – programação concorrente em Java
+**Profº Francielli 6º BCC
 
 <hr>
 <h3> Alun@s </h3>
