@@ -1,34 +1,43 @@
 create database aeroporto;
-create table reserva(
-	int cod_voo,
-	in cod_assento,
-	int codreserva,
-	varchar cpf
-);
 
 create table aviao(
-	int codaviao,
-	int qtd_assentos,
-	varchar marca,
-	varchar modelo
-	
-);
-
-create table assento(,
-	int codassento,
-	int codaviao,
-	int cod_voo,
-	bool reservado,
+	codaviao int primary key,
+	qtd_assentos int not null,
+	marca varchar(45),
+	modelo varchar(45)
 );
 
 create table voo(
-	int codvoo,
-	int codaviao,
-	varchar origem,
-	varchar destino,
-	varchar datasaida,
-	varchar datachegada,
+	codvoo int primary key,
+	codaviao int not null,
+	origem varchar(45),
+	destino varchar(45),
+	datasaida varchar(45),
+	datachegada varchar(45),
+    foreign key (codaviao) references aviao(codaviao)
 );
+
+create table assento(
+	codassento int primary key,
+	codaviao int not null,
+	cod_voo int not null,
+	reservado bool not null,
+     foreign key (codaviao) references aviao(codaviao)
+);
+create table reserva(
+	cod_voo int  primary key,
+	cod_assento int not null,
+	codreserva int  not null,
+	cpf varchar(15),
+    foreign key (cod_voo) references voo(codvoo),
+    foreign key (cod_assento) references assento(cod_assento)
+);
+
+
+
+
+
+
 
 
 

@@ -27,33 +27,34 @@ public class DataBase {
         try {
             url = url + host + "/" + database;
             connection = DriverManager.getConnection(url, username, password);
-            //testa conexão
-            if (connection != null) {
-                status = "Conectado com sucesso!";
-            } else {
-                status = " não foi possivel realizar conexão!";
-            }
-            return connection;
+
         } catch (SQLException e) {
             //Não conseguindo se conectar ao banco
             System.out.println("Nao foi possivel conectar ao Banco de Dados.");
-
+        }
+        //testa conexão
+        if (connection != null) {
+            status = "Conectado com sucesso!";
+            return connection;
+        } else {
+            status = " não foi possivel realizar conexão!";
             return null;
         }
     }
-    
-    public static boolean close(){
-           try {
-            DataBase.getConnection().close();
+
+    public static boolean close() {
+        try {
+            connection.close();
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
     }
-    
-    public Connection reconect(){
+
+    public Connection reconect() {
         DataBase.close();
+                
         return DataBase.getConnection();
     }
 
