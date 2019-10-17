@@ -25,12 +25,12 @@ create table assento(
      foreign key (codaviao) references aviao(codaviao)
 );
 create table reserva(
-	cod_voo int  primary key,
-	cod_assento int not null,
+	codvoo int  primary key,
+	codassento int not null,
 	codreserva int  not null,
 	cpf varchar(15),
-    foreign key (cod_voo) references voo(codvoo),
-    foreign key (cod_assento) references assento(cod_assento)
+    foreign key (codvoo) references voo(codvoo),
+    foreign key (codassento) references assento(codassento)
 );
 
 
