@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package aero;
 
 /**
@@ -11,47 +6,55 @@ package aero;
  */
 
 public class Reserva {
+    
+    private String cpf;
+    private int codVoo, codAssento, codReserva;
 
+    public Reserva(int codreserva, int codVoo, int codAssento, String cpf) {
+        this.codReserva = codreserva;
+        this.codAssento = codAssento;
+        this.codVoo = codVoo;
+        this.cpf = cpf;
+        //função que gera codigo da reserva
+        //codReserva = (codVoo * (1/codAssento)) * (codVoo) + codAssento;
+    }
+
+    public Reserva(int codVoo, int codAssento, String cpf) {
+        this.codAssento = codAssento;
+        this.codVoo = codVoo;
+        this.cpf = cpf;
+        //função que gera codigo da reserva
+        //codReserva = (codVoo * (1/codAssento)) * (codVoo) + codAssento;
+    }
+    
     /**
      * @return the codReserva
      */
     public int getCodReserva() {
         return codReserva;
     }
-	private String cpf;
-	private int codVoo, codAssento, codReserva;
-	
-	public Reserva( int codVoo, int codAssento, String cpf) {
-		this.codAssento = codAssento;
-		this.codVoo = codVoo;
-		this.cpf = cpf;
-                //função que gera codigo da reserva
-                codReserva = (codVoo * (1/codAssento)) * (codVoo) + codAssento;
-	}
-	
-	public String getCpf() {
-		return cpf;
-	}
-	
-	public int getCodVoo() {
-		return codVoo;
-	}
-        /*
-            retorna codigo do assento
-        */
-	public int getCodAssento() {
-		return codAssento;
-	}
+
+    public String getCpf() {
+            return cpf;
+    }
+
+    public int getCodVoo() {
+            return codVoo;
+    }
+    /*
+        retorna codigo do assento
+    */
+    public int getCodAssento() {
+            return codAssento;
+    }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("CPF: ").append(cpf)
-        .append(" Voo: ").append(codVoo)
-             .append(" Assento: ").append(codAssento)
-                .append(" Codigo: ").append(getCodReserva());
-        return super.toString(); //To change body of generated methods, choose Tools | Templates.
+                .append("\tVoo: ").append(codVoo)
+                .append("\tAssento: ").append(codAssento)
+                .append("\tCodigo: ").append(getCodReserva());
+        return sb.toString();
     }
-       
-	
 }

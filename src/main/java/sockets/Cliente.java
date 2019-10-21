@@ -31,17 +31,20 @@ public class Cliente {
             PrintStream saida = new PrintStream(
                     cliente.getOutputStream());
             
-            while(teclado.hasNextLine()){
-                //lendo as informacoes que o servidor enviar
-                Scanner s = new Scanner(cliente.getInputStream());
-                
+            //lendo as informacoes que o servidor enviar
+            Scanner s = new Scanner(cliente.getInputStream());
+            
+            String respostaServidor;
+            while(!(respostaServidor = s.nextLine()).equals("EOO")) {
+                System.out.println("Servidor: " + respostaServidor);
+            }
+            while(teclado.hasNextLine()){    
                 //lendo a linha e "jogando" (ou escrevendo) no buffer de saida
                 saida.println(teclado.nextLine());
-
-              
+                
                 //imprimindo mensagem enviada pelo cliente
-                if (s.hasNextLine()) {
-                    System.out.println("Servidor: " + s.nextLine());
+                while(!(respostaServidor = s.nextLine()).equals("EOO")) {
+                    System.out.println("Servidor: " + respostaServidor);
                 }
             }
 

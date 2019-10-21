@@ -6,7 +6,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -18,7 +17,7 @@ public class ReservaDAO {
 
     public void insert(Reserva reserva) {
         try {
-            String sql = "INSERT INTO reserva(cpf, cod_assento,cod_voo ) values (?, ?, ?)";
+            String sql = "INSERT INTO reserva(cpf, codassento, codvoo) values (?, ?, ?)";
             PreparedStatement stmt = DataBase.getConnection().prepareStatement(sql);
             stmt.setString(1, reserva.getCpf());
             stmt.setInt(2, reserva.getCodAssento());
@@ -51,7 +50,7 @@ public class ReservaDAO {
     public Reserva findById(int codReserva) {
         Reserva reserva = null;
         try {
-            String sql = "SELECT cod_voo, cod_assento, cpf FROM reserva WHERE cod_reserva=?";
+            String sql = "SELECT codvoo, codassento, cpf FROM reserva WHERE codreserva=?";
             PreparedStatement stmt = DataBase.getConnection().prepareStatement(sql);
             stmt.setInt(1, codReserva);
             ResultSet rs = stmt.executeQuery();
@@ -64,7 +63,7 @@ public class ReservaDAO {
         return reserva;
     }
 
-    public List<Reserva> findAll() {
+    public ArrayList<Reserva> findAll() {
         ArrayList<Reserva> reservas = null;
         String sql = "SELECT * FROM reserva ";
         PreparedStatement stmt = null;
@@ -82,7 +81,31 @@ public class ReservaDAO {
         } catch (SQLException ex) {
             Logger.getLogger(ReservaDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return reservas;
+    }
+    
+    public ArrayList<Reserva> reservasVoo(int codVoo) {
+        ArrayList<Reserva> reservas = null;
+        String sql = "SELECT * FROM reserva WHERE codvoo = ?";
+        PreparedStatement stmt;
+        ResultSet rs;
+        try {
+            stmt = DataBase.getConnection().prepareStatement(sql);
+            stmt.setInt(1, codVoo);
+            rs = stmt.executeQuery();
+            reservas = new ArrayList<>();
 
+            while (rs.next()) {
+                reservas.add(new Reserva(
+                        rs.getInt("codreserva"),
+                        rs.getInt("codvoo"),
+                        rs.getInt("codassento"),
+                        rs.getString("cpf")));
+            }
+            stmt.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(ReservaDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return reservas;
     }
 }

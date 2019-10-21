@@ -24,6 +24,7 @@ create table assento(
 	reservado bool not null,
      foreign key (codaviao) references aviao(codaviao)
 );
+
 create table reserva(
 	codvoo int  primary key,
 	codassento int not null,

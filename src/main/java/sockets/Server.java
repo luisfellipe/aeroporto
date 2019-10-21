@@ -5,8 +5,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 /*
- * Demonstrando a troce de mensagens entre processos
- * Classe Servidor, que aguarda a conex�o de um Cliente
+ * Demonstrando a troca de mensagens entre processos
+ * Classe Servidor, que aguarda a conexão de um Cliente
  * e imprime as mensagens enviadas pelo Cliente
  * Este trata-se do primeiro exemplo, em que o servidor
  * consegue receber mensagens de apenas um cliente
@@ -14,8 +14,8 @@ import java.net.Socket;
 public class Server {
 
     public static void main(String[] args) {
-        ServerSocket servidor = null;
-        Socket cliente = null;
+        ServerSocket servidor;
+        Socket cliente;
         try {
             /*
              * Iniciando o servidor, na porta 8090
@@ -23,7 +23,6 @@ public class Server {
             servidor = new ServerSocket(8090);
             System.out.println("Servidor aguardando requisições "
                     + "na porta 8090...");
-            cliente = null;
             while (true) {
                 //esperando por uma conexao
                 cliente = servidor.accept();

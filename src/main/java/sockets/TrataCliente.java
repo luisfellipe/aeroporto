@@ -2,15 +2,14 @@ package sockets;
 
 /**
  *
- * @author luis
+ * @author luis felipe
  */
+import aero.Assento;
 import aero.Reserva;
 import aero.Voo;
+import dao.AssentoDAO;
 import dao.VooDAO;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -48,13 +47,14 @@ public class TrataCliente extends Thread {
 	 * que a thread desempenhe, portanto, deve ser implementada no metodo
 	 * run
      */
+    
     @Override
     public void run() {
         Scanner  entrada = null;
-        PrintStream saida = null;
+        PrintStream saida;
         try {
-           //saida do cliente
-           saida = new PrintStream(cliente.getOutputStream());
+            //saida do cliente
+            saida = new PrintStream(cliente.getOutputStream());
             //lendo as informacoes que o cliente enviar
             entrada = new Scanner(cliente.getInputStream());
             //
@@ -65,41 +65,41 @@ public class TrataCliente extends Thread {
         } finally {
             entrada.close();
         }
-
     }
 
-    public static void menu(PrintStream saida, Scanner  entrada) throws IOException {
+    public static void menu(PrintStream saida, Scanner entrada) throws IOException {
 
-        int escolha = 0;
+        int escolha;
         while (true) {
-            saida.println("Listar Voos < 0\nreservar Voo >= 0");
+            enviarParaCliente("Listar Voos < 0\nReservar Voo >= 0", saida);
             escolha = entrada.nextInt();
             if (escolha >= 0) {
-                int codVoo = 0;
-                saida.print("Voltar: 0\nCodigo do Voo: ");
+                int codVoo;
+                enviarParaCliente("Voltar: 0\nCodigo do Voo: ", saida);
                 codVoo = entrada.nextInt();
                 if (codVoo == 0) {
                     continue;
                 }
+                
                 Voo voo = new VooDAO().findById(codVoo);
                 if (voo == null) {
-                    saida.println("Não existe esse voo no sistema!");
-                }
-
-                saida.println("Quantos assentos deseja reservar?");
-                escolha = entrada.nextInt();
-                if (codVoo == 0) {
+                    enviarParaCliente("Não existe esse voo no sistema!", saida);
                     continue;
                 }
+                
+                String cpf;
+                enviarParaCliente("Digite seu CPF: ", saida);
+                cpf = entrada.next();
+
+                enviarParaCliente("Quantos assentos deseja reservar?", saida);
                 escolha = entrada.nextInt();
-                if (voo.qtdAssLivres() < escolha) {
-                    saida.print("Erro: Falta de assento, Existem " + voo.qtdAssLivres() + " Assentos Disponiveis");
+                for (int i = 0; i < escolha; i++) {
+                    if (voo.qtdAssLivres() <= 0) {
+                        enviarParaCliente("Erro: Falta de assento disponível, existem " + voo.qtdAssLivres() + " assentos disponiveis", saida);
+                        break;
+                    }
+                    reservar(codVoo, voo, cpf, saida);
                 }
-                String cpf = null;
-                saida.print("Digite seu CPF: ");
-                cpf = entrada.nextLine();
-                Reserva r = new Reserva(codVoo, voo.getAviao().getAssentoLivre().getcodAssento(), cpf);
-                reservar(r, saida);
             } else if (escolha < 0) {
                 listarVoos(saida);//lista voos existentes
             }
@@ -110,17 +110,35 @@ public class TrataCliente extends Thread {
     public static void listarVoos(PrintStream saida) {
         VooDAO vdao = new VooDAO();
         List<Voo> voos = vdao.findAll();
-        for (Voo voo : voos) {
-           saida.println(voo.toString());
+        if (voos.isEmpty()) {
+            enviarParaCliente("Não há voos cadastrados", saida);
         }
+        voos.forEach((voo) -> {
+            enviarParaCliente(voo.toString(), saida);
+        });
     }
 
-    public static synchronized void reservar( Reserva reserva, PrintStream saida) {
-        VooDAO vdao = new VooDAO();
-        Voo voo = vdao.findById(reserva.getCodVoo());
-        voo.setReserva(reserva);
-        saida.println("Reserva confirmada!/n----------------------------------------------\n");
-        saida.println(reserva.toString());
-        saida.println("----------------------------------------------");
+    public static synchronized void reservar(int codVoo, Voo voo, String cpf, PrintStream saida) {
+        Assento assentoLivre = voo.getAviao().getAssentoLivre(codVoo);
+        if (assentoLivre == null) {
+            enviarParaCliente("Assento indisponível", saida);
+        }
+        AssentoDAO assentoDAO = new AssentoDAO();
+        assentoDAO.reservaAssento(true, assentoLivre.getCodAssento(), codVoo);
+        Reserva r = new Reserva(codVoo, assentoLivre.getCodAssento(), cpf);
+        voo.addReserva(r);
+        
+        StringBuilder sb = new StringBuilder();
+        enviarParaCliente(sb
+                .append("Reserva confirmada!")
+                .append("\n----------------------------------------------\n")
+                .append(r.toString())
+                .append("\n----------------------------------------------")
+                .toString(), saida);
+    }
+    
+    public static void enviarParaCliente(String mensagem, PrintStream saida) {
+        saida.println(mensagem);
+        saida.println("EOO");
     }
 }

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package dao;
 
 import aero.Assento;
@@ -24,10 +19,10 @@ public class AssentoDAO {
 
     public void insert(Assento assento) {
         try {
-            String sql = "INSERT INTO assento(codassento, codavia) values (?, ?, ?)";
+            String sql = "INSERT INTO assento(codaviao, reservado) values (?, ?)";
             PreparedStatement stmt = DataBase.getConnection().prepareStatement(sql);
-            stmt.setInt(1, assento.getcodAssento());
-            stmt.setInt(2, assento.getCodAviao());
+            stmt.setInt(1, assento.getCodAviao());
+            stmt.setBoolean(2, assento.isReservado());
             stmt.execute();
             stmt.close();
         } catch (SQLException ex) {
@@ -39,7 +34,7 @@ public class AssentoDAO {
     public void delete(int codVoo, int codAssento) {
 
         try {
-            String sql = "DELETE FROM reserva where codvoo=? and cod_assento=?";
+            String sql = "DELETE FROM reserva where codvoo=? and codassento=?";
             PreparedStatement stmt = DataBase.getConnection().prepareStatement(sql);
             stmt.setInt(1, codVoo);
             stmt.setInt(2, codAssento);
@@ -52,7 +47,7 @@ public class AssentoDAO {
 
     public Reserva findById(int codReserva) {
         try {
-            String sql = "SELECT cod_voo, cod_assento, cpf FROM reserva WHERE cod_reserva=?";
+            String sql = "SELECT codvoo, codassento, cpf FROM reserva WHERE codreserva=?";
             PreparedStatement stmt = DataBase.getConnection().prepareStatement(sql);
             stmt.setInt(1, codReserva);
             ResultSet rs = stmt.executeQuery();
@@ -68,7 +63,7 @@ public class AssentoDAO {
 
     public List<Assento> findAll(int codVoo) {
 
-        String sql = "SELECT * FROM assento WHERE cod_voo=?";
+        String sql = "SELECT * FROM assento WHERE codvoo=?";
         PreparedStatement stmt = null;
         try {
             stmt = DataBase.getConnection().prepareStatement(sql);
@@ -88,7 +83,11 @@ public class AssentoDAO {
             while (rs.next()) {
                 Assento ass = null;
                 try {
-                    ass = new Assento(rs.getInt("cod_assento"), rs.getInt("cod_aviao"), rs.getBoolean("reservado"));
+                    ass = new Assento(
+                            rs.getInt("codassento"),
+                            rs.getInt("codaviao"),
+                            rs.getBoolean("reservado")
+                    );
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                 }
@@ -101,17 +100,42 @@ public class AssentoDAO {
         return assentos;
     }
     
-    public void reservaAssento(boolean reservado){
-        
+    public void reservaAssento(boolean reserva, int codAssento, int codvoo){
          try {
-            String sql = "UPADATE assento set reservado=?";
+            String sql = "UPDATE assento set reservado=? WHERE codasssento=? AND codvoo=?";
             PreparedStatement stmt = DataBase.getConnection().prepareStatement(sql);
-            stmt.setBoolean(1, reservado);
+            stmt.setBoolean(1, reserva);
+            stmt.setInt(2, codAssento);
+            stmt.setInt(3, codvoo);
             stmt.execute();
             stmt.close();
         } catch (SQLException ex) {
             Logger.getLogger(ReservaDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    public ArrayList<Assento> getAssentosAviao(int codAviao, int codVoo){
+        ArrayList<Assento> assentos = new ArrayList<>();
+        try {
+           String sql = "SELECT * FROM assento WHERE codaviao=? AND codvoo=?";
+           PreparedStatement stmt = DataBase.getConnection().prepareStatement(sql);
+           stmt.setInt(1, codAviao);
+           stmt.setInt(2, codVoo);
+           ResultSet rs;
+           rs = stmt.executeQuery();
+           Assento assento;
+           while (rs.next()) {
+                assento = new Assento(
+                        rs.getInt("codassento"),
+                        rs.getInt("codaviao"),
+                        rs.getBoolean("reservado"));
+                assentos.add(assento);
+           }
+           stmt.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(ReservaDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return assentos;
     }
 }
 
