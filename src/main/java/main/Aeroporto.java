@@ -91,10 +91,12 @@ public class Aeroporto {
 
     private void addAviao() {
         Scanner leitor = new Scanner(System.in);
-        int qtdAssentos;
+        int qtdAssentos, codigo;
         String marca, modelo;
 
         System.out.println("===== Novo avião =====");
+        System.out.println("Informe o codigo do Avião: ");
+        codigo = leitor.nextInt();
         System.out.println("Informe a quantidade de assentos: ");
         qtdAssentos = leitor.nextInt();
         System.out.println("Informe a marca: ");
@@ -102,10 +104,8 @@ public class Aeroporto {
         System.out.println("Informe o modelo: ");
         modelo = leitor.next();
         try {
-            AviaoDAO aviaoDAO = new AviaoDAO();
-            int codigo = marca.length() + modelo.length() + marca.hashCode() + modelo.hashCode();
             Aviao newAviao = new Aviao(codigo, marca, modelo, qtdAssentos);
-            aviaoDAO.insert(newAviao);
+            new AviaoDAO().insert(newAviao);
         } catch (Exception ex) {
             Logger.getLogger(Aeroporto.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -113,10 +113,12 @@ public class Aeroporto {
 
     private void addVoo() {
         Scanner leitor = new Scanner(System.in);
-        int codAviao;
+        int codAviao = 0, codVoo = 0;
         String origem, destino, dataSaida, dataChegada;
 
         System.out.println("===== Novo voo =====");
+        System.out.println("Informe um codigo para o voo: ");
+        codVoo = leitor.nextInt();
         System.out.println("Informe o codigo do aviao: ");
         codAviao = leitor.nextInt();
         System.out.println("Informe a origem: ");
@@ -129,9 +131,8 @@ public class Aeroporto {
         dataChegada = leitor.next();
 
         try {
-            VooDAO vooDAO = new VooDAO();
-            Voo newVoo = new Voo(codAviao, origem, destino, dataSaida, dataChegada);
-            vooDAO.insert(newVoo);
+            Voo newVoo = new Voo(codVoo, codAviao, origem, destino, dataSaida, dataChegada);
+            new VooDAO().insert(newVoo);
         } catch (Exception ex) {
             Logger.getLogger(Aeroporto.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -159,10 +160,10 @@ public class Aeroporto {
         System.out.println("===== Remove avião =====");
         System.out.println("Informe o código do avião a ser removido: ");
         codAviao = leitor.nextInt();
+        System.out.println(codAviao);
 
         try {
-            AviaoDAO aviaoDAO = new AviaoDAO();
-            aviaoDAO.delete(codAviao);
+            new AviaoDAO().delete(codAviao);
         } catch (Exception ex) {
             Logger.getLogger(Aeroporto.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -178,7 +179,4 @@ public class Aeroporto {
         return leitor.nextInt();
     }
 
-    public static synchronized void reservar(Reserva reserva) throws NotPossibleReserveException {
-
-    }
 }

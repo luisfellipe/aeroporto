@@ -4,38 +4,29 @@ package aero;
  *
  * @author luis
  */
+import dao.AssentoDAO;
 import dao.AviaoDAO;
 import dao.ReservaDAO;
+import dao.VooDAO;
 import java.util.ArrayList;
 
 public class Voo {
 
-    private int codigo, codAviao;
+    private int codVoo, codAviao;
     private String origem, destino, dataSaida, dataChegada;
-    private ArrayList<Reserva> reservas;
 
-    public Voo(int codigo, int codaviao, String origem, String destino, String dataSaida, String dataChegada, ArrayList<Reserva> reservas) {
-        this.codigo = codigo;
+    public Voo(int codvoo, int codaviao, String origem, String destino, String dataSaida, String dataChegada) {
+        this.codVoo = codvoo;
         this.codAviao = codaviao;
         this.origem = origem;
         this.dataSaida = dataSaida;
         this.dataChegada = dataChegada;
         this.destino = destino;
-        this.reservas = reservas;
     }
     
-    public Voo(int codaviao, String origem, String destino, String dataSaida, String dataChegada) {
-        this.codAviao = codaviao;
-        this.origem = origem;
-        this.dataSaida = dataSaida;
-        this.dataChegada = dataChegada;
-        this.destino = destino;
-        this.reservas = new ArrayList<>();
-    }
 
     public Aviao getAviao() {
-        AviaoDAO avdao = new AviaoDAO();
-        return avdao.findById(this.codAviao);
+        return new AviaoDAO().findById(this.codAviao);
     }
 
     public boolean addReserva(Reserva reserva) {
@@ -46,10 +37,10 @@ public class Voo {
     }
 
     /**
-     * @return the codigo
+     * @return the codVoo
      */
-    public int getCodigo() {
-        return codigo;
+    public int getCodVoo() {
+        return codVoo;
     }
 
     /**
@@ -77,24 +68,34 @@ public class Voo {
      * @return the reservas
      */
     public ArrayList<Reserva> getReservas() {
-        return reservas;
+        return new ReservaDAO().findAll(codVoo);
     }
 
     /*
      * quantidade de assentos livres
      * retorna 0 ou menor que zero se não existem mais assentos disponiveis
      */
-    public int qtdAssLivres() {
-        AviaoDAO avdao = new AviaoDAO();
-        Aviao aviao = avdao.findById(this.getCodAviao());
-        return aviao.qtdAssentos() - this.getReservas().size();
+    public int qtdAssLivres(int codvoo) {
+       
+        return new VooDAO().qtdAssentosLivres(codvoo);
+    }
+    
+    public Assento getAssentoLivre() {
+        ArrayList<Assento> assentos = new AssentoDAO().getAssentosAviao(codVoo);
+        Assento ass = null;
+        for (Assento a : assentos) {
+            if (!a.isReservado()) {
+                ass = a;
+            }
+        }
+        return ass;
     }
 
     /**
-     * @param codigo the codigo to set
+     * @param codVoo the codVoo to set
      */
-    public void setCodigo(int codigo) {
-        this.codigo = codigo;
+    public void setCodVoo(int codVoo) {
+        this.codVoo = codVoo;
     }
 
     /**
@@ -145,18 +146,11 @@ public class Voo {
     public void setDataChegada(String dataChegada) {
         this.dataChegada = dataChegada;
     }
-
-    /**
-     * @param reservas the reservas to set
-     */
-    public void setReservas(ArrayList<Reserva> reservas) {
-        this.reservas = reservas;
-    }
     
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Codigo: ").append(this.getCodigo())
+        sb.append("Codigo: ").append(this.getCodVoo())
                 .append("\tOrigem: ").append(this.getOrigem())
                 .append("\tDestino: ").append(this.getDestino())
                 .append("\tSaida: ").append(this.getDataSaida())

@@ -47,10 +47,9 @@ public class TrataCliente extends Thread {
 	 * que a thread desempenhe, portanto, deve ser implementada no metodo
 	 * run
      */
-    
     @Override
     public void run() {
-        Scanner  entrada = null;
+        Scanner entrada = null;
         PrintStream saida;
         try {
             //saida do cliente
@@ -80,13 +79,13 @@ public class TrataCliente extends Thread {
                 if (codVoo == 0) {
                     continue;
                 }
-                
+
                 Voo voo = new VooDAO().findById(codVoo);
                 if (voo == null) {
                     enviarParaCliente("Não existe esse voo no sistema!", saida);
                     continue;
                 }
-                
+
                 String cpf;
                 enviarParaCliente("Digite seu CPF: ", saida);
                 cpf = entrada.next();
@@ -94,11 +93,11 @@ public class TrataCliente extends Thread {
                 enviarParaCliente("Quantos assentos deseja reservar?", saida);
                 escolha = entrada.nextInt();
                 for (int i = 0; i < escolha; i++) {
-                    if (voo.qtdAssLivres() <= 0) {
-                        enviarParaCliente("Erro: Falta de assento disponível, existem " + voo.qtdAssLivres() + " assentos disponiveis", saida);
+                    if (voo.qtdAssLivres(codVoo) <= 0) {
+                        enviarParaCliente("Erro: Falta de assento disponível, existem " + voo.qtdAssLivres(codVoo) + " assentos disponiveis", saida);
                         break;
                     }
-                    reservar(codVoo, voo, cpf, saida);
+                    reservar(voo, cpf, saida);
                 }
             } else if (escolha < 0) {
                 listarVoos(saida);//lista voos existentes
@@ -112,31 +111,35 @@ public class TrataCliente extends Thread {
         List<Voo> voos = vdao.findAll();
         if (voos.isEmpty()) {
             enviarParaCliente("Não há voos cadastrados", saida);
+        } else {
+            voos.forEach(voo -> enviarParaCliente(voo.toString(), saida));
         }
-        voos.forEach((voo) -> {
-            enviarParaCliente(voo.toString(), saida);
-        });
     }
 
-    public static synchronized void reservar(int codVoo, Voo voo, String cpf, PrintStream saida) {
-        Assento assentoLivre = voo.getAviao().getAssentoLivre(codVoo);
+    /*
+     * reserva o uma passagem para aquele voo
+     * as reservas são sincronizadas, ou seja essa função só pode ser acessada uma Thread por vez
+     */
+    public static synchronized void reservar( Voo voo, String cpf, PrintStream saida) {
+        Assento assentoLivre = voo.getAssentoLivre();
         if (assentoLivre == null) {
             enviarParaCliente("Assento indisponível", saida);
+        } else {
+            AssentoDAO assentoDAO = new AssentoDAO();
+            assentoDAO.reservaAssento(true, assentoLivre.getCodAssento(), voo.getCodVoo());
+            Reserva r = new Reserva(voo.getCodVoo(), assentoLivre.getCodAssento(), cpf);
+            voo.addReserva(r);
+
+            StringBuilder sb = new StringBuilder();
+            enviarParaCliente(sb
+                    .append("Reserva confirmada!")
+                    .append("\n----------------------------------------------\n")
+                    .append(r.toString())
+                    .append("\n----------------------------------------------")
+                    .toString(), saida);
         }
-        AssentoDAO assentoDAO = new AssentoDAO();
-        assentoDAO.reservaAssento(true, assentoLivre.getCodAssento(), codVoo);
-        Reserva r = new Reserva(codVoo, assentoLivre.getCodAssento(), cpf);
-        voo.addReserva(r);
-        
-        StringBuilder sb = new StringBuilder();
-        enviarParaCliente(sb
-                .append("Reserva confirmada!")
-                .append("\n----------------------------------------------\n")
-                .append(r.toString())
-                .append("\n----------------------------------------------")
-                .toString(), saida);
     }
-    
+
     public static void enviarParaCliente(String mensagem, PrintStream saida) {
         saida.println(mensagem);
         saida.println("EOO");

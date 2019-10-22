@@ -18,34 +18,15 @@ import java.util.logging.Logger;
 public class AviaoDAO {
 
     public void insert(Aviao aviao) {
-        String sql = "INSERT INTO aviao(marca, modelo, qtdassentos) VALUES(?,?,?)";
+        String sql = "INSERT INTO aviao(codaviao, marca, modelo, qtdassentos) VALUES(?,?,?,?)";
         PreparedStatement stmt;
         try {
             stmt = DataBase.getConnection().prepareStatement(sql);
-            stmt.setString(1, aviao.getMarca());
-            stmt.setString(2, aviao.getModelo());
-            stmt.setInt(3, aviao.qtdAssentos());
+            stmt.setInt(1, aviao.getCod());
+            stmt.setString(2, aviao.getMarca());
+            stmt.setString(3, aviao.getModelo());
+            stmt.setInt(4, aviao.qtdAssentos());
             stmt.execute();
-            stmt.close();
-        } catch (SQLException ex) {
-            Logger.getLogger(AviaoDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        ResultSet rs = null;
-        sql = "SELECT codAviao FROM aviao WHERE marca=? AND modelo=? AND qtdassentos = ?";
-        try {
-            stmt = DataBase.getConnection().prepareStatement(sql);
-            stmt.setString(1, aviao.getMarca());
-            stmt.setString(2, aviao.getModelo());
-            stmt.setInt(3, aviao.qtdAssentos());
-            rs = stmt.executeQuery();
-            if (rs.first()) {
-                AssentoDAO assentoDAO = new AssentoDAO();
-                int codAviao = rs.getInt("codaviao");
-                for (int i = 0; i < aviao.qtdAssentos(); i++) {
-                    assentoDAO.insert(new Assento(codAviao, false));
-                }
-            }
             stmt.close();
         } catch (SQLException ex) {
             Logger.getLogger(AviaoDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -57,12 +38,12 @@ public class AviaoDAO {
         this.insert(aviao);
     }
 
-    public void delete(int cod) {
+    public void delete(int codAviao) {
         String sql = "DELETE FROM aviao WHERE codaviao=?";
         PreparedStatement stmt;
         try {
             stmt = DataBase.getConnection().prepareStatement(sql);
-            stmt.setInt(1, cod);
+            stmt.setInt(1, codAviao);
             stmt.execute();
             stmt.close();
         } catch (SQLException ex) {

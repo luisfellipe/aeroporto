@@ -37,7 +37,7 @@ public class ReservaDAO {
     public void delete(int codReserva) {
 
         try {
-            String sql = "DELETE FROM reserva where codvreserva=?";
+            String sql = "DELETE FROM reserva where codreserva=?";
             PreparedStatement stmt = DataBase.getConnection().prepareStatement(sql);
             stmt.setInt(1, codReserva);
             stmt.execute();
@@ -63,13 +63,14 @@ public class ReservaDAO {
         return reserva;
     }
 
-    public ArrayList<Reserva> findAll() {
+    public ArrayList<Reserva> findAll(int codVoo) {
         ArrayList<Reserva> reservas = null;
-        String sql = "SELECT * FROM reserva ";
+        String sql = "SELECT * FROM reserva WHERE codvoo=?";
         PreparedStatement stmt = null;
         ResultSet rs = null;
         try {
             stmt = DataBase.getConnection().prepareStatement(sql);
+            stmt.setInt(1, codVoo);
             rs = stmt.executeQuery();
             reservas = new ArrayList<>(10);
 
@@ -86,7 +87,7 @@ public class ReservaDAO {
     
     public ArrayList<Reserva> reservasVoo(int codVoo) {
         ArrayList<Reserva> reservas = null;
-        String sql = "SELECT * FROM reserva WHERE codvoo = ?";
+        String sql = "SELECT * FROM reserva WHERE codvoo=?";
         PreparedStatement stmt;
         ResultSet rs;
         try {

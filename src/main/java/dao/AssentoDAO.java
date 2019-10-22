@@ -19,10 +19,11 @@ public class AssentoDAO {
 
     public void insert(Assento assento) {
         try {
-            String sql = "INSERT INTO assento(codaviao, reservado) values (?, ?)";
+            String sql = "INSERT INTO assento(codassento, codaviao, reservado) values (?, ?, ?)";
             PreparedStatement stmt = DataBase.getConnection().prepareStatement(sql);
-            stmt.setInt(1, assento.getCodAviao());
-            stmt.setBoolean(2, assento.isReservado());
+            stmt.setInt(1, assento.getCodAssento());
+            stmt.setInt(2, assento.getCodAviao());
+            stmt.setBoolean(3, assento.isReservado());
             stmt.execute();
             stmt.close();
         } catch (SQLException ex) {
@@ -45,63 +46,61 @@ public class AssentoDAO {
         }
     }
 
-    public Reserva findById(int codReserva) {
+    /*
+     * retorna uma lista de reservas emm voos a qual aquele assento esta relacionado
+     */
+    public List<Reserva> findById(int codAssento) {
+        ArrayList<Reserva> lista = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
         try {
-            String sql = "SELECT codvoo, codassento, cpf FROM reserva WHERE codreserva=?";
-            PreparedStatement stmt = DataBase.getConnection().prepareStatement(sql);
-            stmt.setInt(1, codReserva);
-            ResultSet rs = stmt.executeQuery();
-            Reserva reserva = new Reserva(
-                    rs.getInt(1), rs.getInt(2), rs.getString(3));
-
-            return reserva;
+            String sql = "SELECT codvoo, codassento, cpf FROM reserva WHERE codassento=?";
+            stmt = DataBase.getConnection().prepareStatement(sql);
+            stmt.setInt(1, codAssento);
+            rs = stmt.executeQuery();
+            lista = new ArrayList<>(10);
+            while (rs.next()) {
+                lista.add(new Reserva(
+                        rs.getInt(1), rs.getInt(2), rs.getString(3)));
+            }
+            stmt.close();
         } catch (SQLException ex) {
             Logger.getLogger(ReservaDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return null;
+        return lista;
     }
 
     public List<Assento> findAll(int codVoo) {
 
         String sql = "SELECT * FROM assento WHERE codvoo=?";
         PreparedStatement stmt = null;
+        ResultSet rs = null;
+        ArrayList<Assento> assentos = null;
         try {
             stmt = DataBase.getConnection().prepareStatement(sql);
             stmt.setInt(1, codVoo);
-        } catch (SQLException ex) {
-            Logger.getLogger(ReservaDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        ResultSet rs = null;
-        try {
             rs = stmt.executeQuery();
-        } catch (SQLException ex) {
-            Logger.getLogger(ReservaDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        ArrayList<Assento> assentos = new ArrayList<>(10);
-        try {
+            assentos = new ArrayList<>(10);
             while (rs.next()) {
                 Assento ass = null;
-                try {
-                    ass = new Assento(
-                            rs.getInt("codassento"),
-                            rs.getInt("codaviao"),
-                            rs.getBoolean("reservado")
-                    );
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
+                ass = new Assento(
+                        rs.getInt("codassento"),
+                        rs.getInt("codaviao"),
+                        rs.getBoolean("reservado")
+                );
+
                 assentos.add(ass);
             }
+            stmt.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
 
         return assentos;
     }
-    
-    public void reservaAssento(boolean reserva, int codAssento, int codvoo){
-         try {
+
+    public void reservaAssento(boolean reserva, int codAssento, int codvoo) {
+        try {
             String sql = "UPDATE assento set reservado=? WHERE codasssento=? AND codvoo=?";
             PreparedStatement stmt = DataBase.getConnection().prepareStatement(sql);
             stmt.setBoolean(1, reserva);
@@ -113,29 +112,27 @@ public class AssentoDAO {
             Logger.getLogger(ReservaDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    public ArrayList<Assento> getAssentosAviao(int codAviao, int codVoo){
-        ArrayList<Assento> assentos = new ArrayList<>();
+
+    public ArrayList<Assento> getAssentosAviao(int codVoo) {
+        ArrayList<Assento> assentos = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
         try {
-           String sql = "SELECT * FROM assento WHERE codaviao=? AND codvoo=?";
-           PreparedStatement stmt = DataBase.getConnection().prepareStatement(sql);
-           stmt.setInt(1, codAviao);
-           stmt.setInt(2, codVoo);
-           ResultSet rs;
-           rs = stmt.executeQuery();
-           Assento assento;
-           while (rs.next()) {
-                assento = new Assento(
+            String sql = "SELECT * FROM assento WHERE codvoo=?";
+            stmt = DataBase.getConnection().prepareStatement(sql);
+            stmt.setInt(1, codVoo);
+            rs = stmt.executeQuery();
+            assentos = new ArrayList<>(10);
+            while (rs.next()) {
+                assentos.add(new Assento(
                         rs.getInt("codassento"),
                         rs.getInt("codaviao"),
-                        rs.getBoolean("reservado"));
-                assentos.add(assento);
-           }
-           stmt.close();
+                        rs.getBoolean("reservado")));
+            }
+            stmt.close();
         } catch (SQLException ex) {
             Logger.getLogger(ReservaDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return assentos;
     }
 }
-

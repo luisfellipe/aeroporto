@@ -44,23 +44,14 @@ public class Aviao {
         return qtdAssentos;
     }
 
-    public Assento getAssentoLivre(int codVoo) {
-        ArrayList<Assento> assentos = new AssentoDAO().getAssentosAviao(codigo, codVoo);
-        for (Assento a : assentos) {
-            if (!a.isReservado()) {
-                return a;
-            }
-        }
-        return null;
-    }
-
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder(30);
         sb.append("Codigo: ").append(codigo)
                 .append("\tMarca: ").append(marca)
                 .append("\tModelo: ").append(modelo)
                 .append("\tAssentos(qtd): ").append(qtdAssentos);
+
         return sb.toString();
     }
 }
