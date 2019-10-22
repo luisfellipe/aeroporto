@@ -1,7 +1,5 @@
 package aero;
 
-import dao.AssentoDAO;
-
 /**
  *
  * @author luis

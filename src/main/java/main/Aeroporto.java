@@ -1,11 +1,9 @@
 package main;
 
 import aero.Aviao;
-import aero.Reserva;
 import aero.Voo;
 import dao.AviaoDAO;
 import dao.VooDAO;
-import exception.NotPossibleReserveException;
 import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Level;

@@ -42,8 +42,10 @@ insert into aviao(codaviao, qtdassentos, marca, modelo) values(
 select * from aviao;
 
 insert into voo(codvoo, codaviao, origem, destino, datasaida, datachegada) values(
-1, 1, 'São Paulo', 'Rio de Janeiro', '12/10/19 23:50', '13/10/19 2:00'
+8, 1, 'São Paulo', 'Rio de Janeiro', '12/10/19 23:50', '13/10/19 2:00'
 );
 insert into voo(codvoo, codaviao, origem, destino, datasaida, datachegada) values(
-2, 2, 'São Paulo', 'Santa Catarina', '12/10/19 23:50', '13/10/19 2:00'
+5, 2, 'São Paulo', 'Santa Catarina', '12/10/19 23:50', '13/10/19 2:00'
 );
+select * from voo;
+delete from voo where true;

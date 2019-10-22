@@ -4,7 +4,6 @@ package aero;
  *
  * @author luis
  */
-import dao.AssentoDAO;
 import java.util.ArrayList;
 
 public class Aviao {

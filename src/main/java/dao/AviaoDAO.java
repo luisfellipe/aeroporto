@@ -1,6 +1,5 @@
 package dao;
 
-import aero.Assento;
 import aero.Aviao;
 import connect.DataBase;
 import java.sql.PreparedStatement;
