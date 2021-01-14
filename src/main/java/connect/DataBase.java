@@ -15,7 +15,7 @@ public class DataBase {
     private static String database = "aeroporto";
     private static String url = "jdbc:mysql://";
     private static String username = "root"; // nome de usuario do db
-    private static String password = "25302356"; //senha de acesso
+    private static String password = "password"; //senha de acesso
     private static String status = "Não conectado!";//status da conexão
 
     public static Connection getConnection() {
